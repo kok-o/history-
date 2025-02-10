@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор карты</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .card {
+            width: 120px;
+            height: 180px;
+            margin: 10px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        
+        .flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            border-radius: 10px;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+        
+        .card-front {
+            background: #2b6cb0;
+            color: white;
+        }
+        
+        .card-back {
+            background: #f56565;
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .answer {
+            background: #38a169 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        const cardsData = [{
+            points: 10,
+            question: "Томирис қандай сақ тайпа патшайымы болды?",
+            answer: "сақ-массагетер"
+        }, {
+            points: 10,
+            question: "«Парсы патшасы 1 Дарий сақтарды толық жеңе алмаған, жорығы сәтсіз аяқталды» деп кімнің деректерінде кездеседі?",
+            answer: "Полиэн деректерінде"
+        }, {
+            points: 10,
+            question: "Македонский Орталық Азияға жасаған жорықтары туралы кімдердің еңбектерінде белгіленген?",
+            answer: "Арриан, Курций, Квинт Руф еңбектерінде"
+        }, {
+            points: 9,
+            question: "Патшайым Томирис қай ежелгі тарихшылардың еңбегінде кездеседі?",
+            answer: "Грек тарихшысы Геродот. Рим тарихшысы Помпей Трог"
+        }, {
+            points: 9,
+            question: "Бехистун жазбасы не туралы?",
+            answer: "1 Дарийдің өз жеңістері туралы ақпарат"
+        }, {
+            points: 9,
+            question: "Шығыс елдерінде Александр Македонский қалай аталды?",
+            answer: "Ескендір Зұлқарнайын"
+        }, {
+            points: 8,
+            question: "Шырақ қандай ерлік жасады?",
+            answer: "Шырақ өз елін, Отанын сақтап қалу үшін парсыларды алдап жеңіске жетті"
+        }, {
+            points: 8,
+            question: "Томирис патшайым қандай болған?",
+            answer: "Батыр, ержүрек, садақ атудың қос шебері, сақтар арасында үлкен беделге ие болған"
+        }, {
+            points: 8,
+            question: "Александр Македонский қандай болған?",
+            answer: "Ұлы қолбасшы, әскери істі жетік меңгерген, өз елінің қайраткері"
+        }, {
+            points: 7,
+            question: "Александр Македонский Орталық Азияға қай жылы жорық жасады?",
+            answer: "Б.з.д. 330-327 ж"
+        }, {
+            points: 7,
+            question: "І Дарий сақ еліне қай жылы жорық жасады?",
+            answer: "Б.з.д. 519-518 ж"
+        }, {
+            points: 7,
+            question: "Кир массагеттерге қай жылы жорық жасады?",
+            answer: "Б.з.д. 530 ж"
+        }];
+
+        const groupedCards = {};
+        cardsData.forEach(card => {
+            if (!groupedCards[card.points]) {
+                groupedCards[card.points] = [];
+            }
+            groupedCards[card.points].push(card);
+        });
+
+        Object.keys(groupedCards).sort((a, b) => b - a).forEach(points => {
+            const row = document.createElement("div");
+            row.classList.add("row");
+
+            groupedCards[points].forEach((data, index) => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+                card.innerHTML = `
+                    <div class="card-inner" id="card-${points}-${index}">
+                        <div class="card-front">${data.points} баллов</div>
+                        <div class="card-back">${data.question}</div>
+                    </div>
+                `;
+
+                let state = 0;
+                card.addEventListener("click", () => {
+                    const cardInner = document.getElementById(`card-${points}-${index}`);
+                    const cardBack = cardInner.querySelector(".card-back");
+                    if (state === 0) {
+                        cardInner.classList.add("flipped");
+                        state = 1;
+                    } else if (state === 1) {
+                        cardBack.innerText = data.answer;
+                        cardBack.classList.add("answer");
+                        state = 2;
+                    }
+                });
+                row.appendChild(card);
+            });
+            document.body.appendChild(row);
+        });
+    </script>
+</body>
+
+</html>
